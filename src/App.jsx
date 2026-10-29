@@ -11,6 +11,12 @@ function App() {
   const [playerHand, setPlayerHand] = useState([]);
   const [dealerHand, setDealerHand] = useState([]);
   const [playerOverDraw, setPlayerOverDraw] = useState(false);
+  const [startDealerTurn, setStartDealerTurn] = useState(false);
+  const [dealerOverdraw, setDealerOverdraw] = useState(false);
+  const [vittoria, setVittoria] = useState(false);
+  const [sconfitta, setSconfitta] = useState(false);
+  const [push, setPush] = useState(false);
+  const [bj, setBj] = useState(false);
 
   useEffect(() => {
 
@@ -31,7 +37,7 @@ function App() {
       if (punteggioAttuale < 21) {
         const cartaPescata = mazzo.pop();
         setDeck(mazzo);
-        
+
         const nuovaMano = [...playerHand, cartaPescata];
         setPlayerHand(nuovaMano);
 
@@ -39,6 +45,30 @@ function App() {
           setPlayerOverDraw(true);
         }
       }
+    }
+  }
+
+  function stay() {
+    setStartDealerTurn(true);
+    let mazzo = [...deck];
+    let manoDealer = [...dealerHand];
+    let punteggioAttuale = calcolaPunteggio(dealerHand);
+    while (punteggioAttuale < 17 && mazzo.length > 0) {
+      const cartaPescata = mazzo.pop();
+      manoDealer = [...manoDealer, cartaPescata];
+      punteggioAttuale = calcolaPunteggio(manoDealer);
+    }
+    setDealerHand(manoDealer);
+    setDeck(mazzo);
+    if (punteggioAttuale > 21) {
+      setDealerOverdraw(true);
+      setVittoria(true);
+    } else if (punteggioAttuale > calcolaPunteggio(playerHand)) {
+      setSconfitta(true);
+    } else if (punteggioAttuale < calcolaPunteggio(playerHand)) {
+      setVittoria(true);
+    } else if (punteggioAttuale === calcolaPunteggio(playerHand)) {
+      setPush(true);
     }
   }
 
@@ -50,7 +80,7 @@ function App() {
       {visualizzaMano(dealerHand)}
       <h2>mano player:{calcolaPunteggio(playerHand)}{playerOverDraw && " Hai sballato, hai perso la puntata!!"}</h2>
       {visualizzaMano(playerHand)}
-      <button onClick={chiamaCarta}>Chiama</button><button>Stai</button>
+      <button onClick={chiamaCarta} disabled={playerOverDraw || startDealerTurn}>Chiama</button><button onClick={stay} disabled={playerOverDraw || startDealerTurn}>Stai</button>
     </div>
   );
 }
