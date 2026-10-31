@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { STATO_GIOCO } from './utility/statiGioco';
+import { messaggiEsito } from './utility/statiGioco';
 import nuovoMazzo from './utility/nuovoMazzo';
-import visualizzaMano from './components/hand';
+import VisualizzaMano from './components/hand';
 import calcolaPunteggio from './utility/calcolaPunteggio';
 import './App.css'
 
@@ -10,25 +12,16 @@ function App() {
   const [deck, setDeck] = useState([]);
   const [playerHand, setPlayerHand] = useState([]);
   const [dealerHand, setDealerHand] = useState([]);
-  const [playerOverDraw, setPlayerOverDraw] = useState(false);
-  const [startDealerTurn, setStartDealerTurn] = useState(false);
-  const [dealerOverdraw, setDealerOverdraw] = useState(false);
-  const [vittoria, setVittoria] = useState(false);
-  const [sconfitta, setSconfitta] = useState(false);
-  const [push, setPush] = useState(false);
-  const [bj, setBj] = useState(false);
+  const [statoGioco, setStatoGioco] = useState(STATO_GIOCO.IN_CORSO);
 
   useEffect(() => {
-
-    const mazzo = nuovoMazzo();
-    setDealerHand([mazzo.pop(), mazzo.pop()]);
-    setPlayerHand([mazzo.pop(), mazzo.pop()]);
-
-    setDeck(mazzo);
+    // setStatoGioco(STATO_GIOCO.IN_CORSO);
+    // const mazzo = nuovoMazzo();
+    // setDealerHand([mazzo.pop(), mazzo.pop()]);
+    // setPlayerHand([mazzo.pop(), mazzo.pop()]);
+    // setDeck(mazzo);
+    nuovaPartita();
   }, []);
-  console.log(deck);
-  console.log(dealerHand);
-  console.log(playerHand);
 
   function chiamaCarta() {
     const mazzo = [...deck];
@@ -42,14 +35,13 @@ function App() {
         setPlayerHand(nuovaMano);
 
         if (calcolaPunteggio(nuovaMano) > 21) {
-          setPlayerOverDraw(true);
+          setStatoGioco(STATO_GIOCO.PLAYER_SBALLATO);
         }
       }
     }
-  }
+  };
 
   function stay() {
-    setStartDealerTurn(true);
     let mazzo = [...deck];
     let manoDealer = [...dealerHand];
     let punteggioAttuale = calcolaPunteggio(dealerHand);
@@ -61,26 +53,40 @@ function App() {
     setDealerHand(manoDealer);
     setDeck(mazzo);
     if (punteggioAttuale > 21) {
-      setDealerOverdraw(true);
-      setVittoria(true);
+      setStatoGioco(STATO_GIOCO.DEALER_SBALLATO);
     } else if (punteggioAttuale > calcolaPunteggio(playerHand)) {
-      setSconfitta(true);
+      setStatoGioco(STATO_GIOCO.SCONFITTA);
     } else if (punteggioAttuale < calcolaPunteggio(playerHand)) {
-      setVittoria(true);
+      setStatoGioco(STATO_GIOCO.VITTORIA);
     } else if (punteggioAttuale === calcolaPunteggio(playerHand)) {
-      setPush(true);
+      setStatoGioco(STATO_GIOCO.PAREGGIO);
     }
   }
+
+  function nuovaPartita() {
+    setStatoGioco(STATO_GIOCO.IN_CORSO);
+    const mazzo = nuovoMazzo();
+    setDealerHand([mazzo.pop(), mazzo.pop()]);
+    setPlayerHand([mazzo.pop(), mazzo.pop()]);
+    setDeck(mazzo);
+  };
 
   return (
     <div>
       <h1>Blackjack in React</h1>
       <p>Carte nel mazzo: {deck.length}</p>
       <h2>mano dealer:{calcolaPunteggio(dealerHand)}</h2>
-      {visualizzaMano(dealerHand)}
-      <h2>mano player:{calcolaPunteggio(playerHand)}{playerOverDraw && " Hai sballato, hai perso la puntata!!"}</h2>
-      {visualizzaMano(playerHand)}
-      <button onClick={chiamaCarta} disabled={playerOverDraw || startDealerTurn}>Chiama</button><button onClick={stay} disabled={playerOverDraw || startDealerTurn}>Stai</button>
+      {VisualizzaMano(dealerHand)}
+      <h2>mano player:{calcolaPunteggio(playerHand)}</h2>
+      {VisualizzaMano(playerHand)}
+      <button onClick={chiamaCarta} disabled={statoGioco !== STATO_GIOCO.IN_CORSO}>Chiama</button>
+      <button onClick={stay} disabled={statoGioco !== STATO_GIOCO.IN_CORSO}>Stai</button>
+      {statoGioco !== STATO_GIOCO.IN_CORSO && (
+        <button onClick={nuovaPartita}>Gioca ancora</button>
+      )}
+      {messaggiEsito[statoGioco] && (
+        <h2>{messaggiEsito[statoGioco]}</h2>
+      )}
     </div>
   );
 }
