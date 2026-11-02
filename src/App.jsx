@@ -52,13 +52,14 @@ function App() {
     }
     setDealerHand(manoDealer);
     setDeck(mazzo);
+    const punteggioGiocatore = calcolaPunteggio(playerHand);
     if (punteggioAttuale > 21) {
       setStatoGioco(STATO_GIOCO.DEALER_SBALLATO);
-    } else if (punteggioAttuale > calcolaPunteggio(playerHand)) {
+    } else if (punteggioAttuale > punteggioGiocatore) {
       setStatoGioco(STATO_GIOCO.SCONFITTA);
-    } else if (punteggioAttuale < calcolaPunteggio(playerHand)) {
+    } else if (punteggioAttuale < punteggioGiocatore) {
       setStatoGioco(STATO_GIOCO.VITTORIA);
-    } else if (punteggioAttuale === calcolaPunteggio(playerHand)) {
+    } else if (punteggioAttuale === punteggioGiocatore) {
       setStatoGioco(STATO_GIOCO.PAREGGIO);
     }
   }
