@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { STATO_GIOCO } from './utility/statiGioco';
-import { messaggiEsito } from './utility/statiGioco';
+import { STATO_GIOCO, messaggiEsito } from './utility/statiGioco';
 import nuovoMazzo from './utility/nuovoMazzo';
 import VisualizzaMano from './components/hand';
 import calcolaPunteggio from './utility/calcolaPunteggio';
-import './App.css'
-
+import './App.css';
 
 function App() {
   const [deck, setDeck] = useState([]);
@@ -15,11 +13,6 @@ function App() {
   const [statoGioco, setStatoGioco] = useState(STATO_GIOCO.IN_CORSO);
 
   useEffect(() => {
-    // setStatoGioco(STATO_GIOCO.IN_CORSO);
-    // const mazzo = nuovoMazzo();
-    // setDealerHand([mazzo.pop(), mazzo.pop()]);
-    // setPlayerHand([mazzo.pop(), mazzo.pop()]);
-    // setDeck(mazzo);
     nuovaPartita();
   }, []);
 
@@ -39,7 +32,7 @@ function App() {
         }
       }
     }
-  };
+  }
 
   function stay() {
     let mazzo = [...deck];
@@ -82,26 +75,78 @@ function App() {
     } else {
       setStatoGioco(STATO_GIOCO.IN_CORSO);
     }
-  };
+  }
 
   return (
-    <div>
-      <h1>Blackjack in React</h1>
-      <p>Carte nel mazzo: {deck.length}</p>
-      <h2>mano dealer:{statoGioco === STATO_GIOCO.IN_CORSO ? "?" : calcolaPunteggio(dealerHand)}</h2>
-      {VisualizzaMano(dealerHand, statoGioco === STATO_GIOCO.IN_CORSO)}
-      <h2>mano player:{calcolaPunteggio(playerHand)}</h2>
-      {VisualizzaMano(playerHand, false)}
-      <button onClick={chiamaCarta} disabled={statoGioco !== STATO_GIOCO.IN_CORSO}>Chiama</button>
-      <button onClick={stay} disabled={statoGioco !== STATO_GIOCO.IN_CORSO}>Stai</button>
-      {statoGioco !== STATO_GIOCO.IN_CORSO && (
-        <button onClick={nuovaPartita}>Gioca ancora</button>
-      )}
-      {messaggiEsito[statoGioco] && (
-        <h2>{messaggiEsito[statoGioco]}</h2>
-      )}
+    <div className="casino-app">
+      <header className="casino-header">
+        <h1>♠ Blackjack Royale ♥</h1>
+        <div className="deck-counter">
+          Carte nel mazzo: <span>{deck.length}</span>
+        </div>
+      </header>
+
+      <main className="blackjack-table">
+        {/* Sezione Banco */}
+        <section className="hand-area dealer-area">
+          <div className="area-info">
+            <h2>BANCO</h2>
+            <div className="score-pill">
+              Punteggio: <strong>{statoGioco === STATO_GIOCO.IN_CORSO ? "?" : calcolaPunteggio(dealerHand)}</strong>
+            </div>
+          </div>
+          <div className="cards-row">
+            {VisualizzaMano(dealerHand, statoGioco === STATO_GIOCO.IN_CORSO)}
+          </div>
+        </section>
+
+        {/* Banner Esito Partita */}
+        {messaggiEsito[statoGioco] && (
+          <div className="outcome-banner">
+            <h2>{messaggiEsito[statoGioco]}</h2>
+          </div>
+        )}
+
+        {/* Sezione Giocatore */}
+        <section className="hand-area player-area">
+          <div className="area-info">
+            <h2>GIOCATORE</h2>
+            <div className="score-pill">
+              Punteggio: <strong>{calcolaPunteggio(playerHand)}</strong>
+            </div>
+          </div>
+          <div className="cards-row">
+            {VisualizzaMano(playerHand, false)}
+          </div>
+        </section>
+
+        {/* Pulsantiera di Gioco */}
+        <footer className="table-controls">
+          <button 
+            className="action-btn hit-btn" 
+            onClick={chiamaCarta} 
+            disabled={statoGioco !== STATO_GIOCO.IN_CORSO}
+          >
+            Chiama Carta
+          </button>
+          
+          <button 
+            className="action-btn stand-btn" 
+            onClick={stay} 
+            disabled={statoGioco !== STATO_GIOCO.IN_CORSO}
+          >
+            Stai
+          </button>
+
+          {statoGioco !== STATO_GIOCO.IN_CORSO && (
+            <button className="action-btn replay-btn" onClick={nuovaPartita}>
+              Nuova Partita
+            </button>
+          )}
+        </footer>
+      </main>
     </div>
   );
 }
 
-export default App
+export default App;
