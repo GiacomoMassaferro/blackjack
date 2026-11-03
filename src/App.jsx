@@ -76,10 +76,10 @@ function App() {
     <div>
       <h1>Blackjack in React</h1>
       <p>Carte nel mazzo: {deck.length}</p>
-      <h2>mano dealer:{calcolaPunteggio(dealerHand)}</h2>
-      {VisualizzaMano(dealerHand)}
+      <h2>mano dealer:{statoGioco === STATO_GIOCO.IN_CORSO ? "?" : calcolaPunteggio(dealerHand)}</h2>
+      {VisualizzaMano(dealerHand, statoGioco === STATO_GIOCO.IN_CORSO)}
       <h2>mano player:{calcolaPunteggio(playerHand)}</h2>
-      {VisualizzaMano(playerHand)}
+      {VisualizzaMano(playerHand, false)}
       <button onClick={chiamaCarta} disabled={statoGioco !== STATO_GIOCO.IN_CORSO}>Chiama</button>
       <button onClick={stay} disabled={statoGioco !== STATO_GIOCO.IN_CORSO}>Stai</button>
       {statoGioco !== STATO_GIOCO.IN_CORSO && (

@@ -1,34 +1,3 @@
-# Suggerimenti di Sviluppo: Prossimi Passi per il Blackjack
-
-Questa guida contiene solo suggerimenti concettuali e logici (senza codice già pronto) per aiutarti a ragionare sulle ultime funzionalità da implementare.
-
-
-## 1. Carta Coperta del Dealer (Hole Card)
-
-### Il Principio Fondamentale:
-* **Non modificare lo stato:** La mano del dealer in memoria deve contenere fin da subito tutte e due le carte distribuite. Non togliere la carta dall'array, altrimenti comprometti il calcolo del mazzo e dei punteggi.
-* **Agisci solo sulla visualizzazione:** La carta va coperta esclusivamente al momento del rendering a schermo.
-
-### Come Ragionare:
-* Nel momento in cui disegni le carte del dealer (nel tuo componente o ciclo di visualizzazione), controlla due cose insieme:
-  1. La partita è ancora nello stato di gioco `IN_CORSO`?
-  2. La carta che stai per mostrare è la prima della lista (ad esempio indice 0)?
-* Se entrambe le condizioni sono vere, disegna un dorso, un punto interrogativo o un simbolo simbolico (es. un rettangolo o una stringa segnaposto).
-* Non appena la partita cambia stato (perché il giocatore clicca "Stai" o sballa), la prima condizione diventa falsa e React mostrerà automaticamente la vera carta a schermo.
-
----
-
-## 2. Punteggio Nascosto del Dealer
-
-### Il Problema:
-* Se mostri il totale del banco mentre la carta è coperta, il giocatore può scoprire il valore della carta nascosta sottraendo la carta visibile dal totale.
-
-### Come Ragionare:
-* Nel titolo o etichetta del punteggio del dealer, usa una condizione logica:
-  * Se la partita **non è più in corso**, mostri il punteggio calcolato su tutte le carte della mano.
-  * Se la partita **è ancora in corso**, al posto del numero mostri un semplice punto interrogativo `?` (oppure il valore della sola carta scoperta).
-
----
 
 ## 3. Gestione del Blackjack Naturale (21 all'avvio)
 
