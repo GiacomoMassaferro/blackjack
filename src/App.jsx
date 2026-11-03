@@ -65,11 +65,23 @@ function App() {
   }
 
   function nuovaPartita() {
-    setStatoGioco(STATO_GIOCO.IN_CORSO);
     const mazzo = nuovoMazzo();
-    setDealerHand([mazzo.pop(), mazzo.pop()]);
-    setPlayerHand([mazzo.pop(), mazzo.pop()]);
+    const manoTavolo = [mazzo.pop(), mazzo.pop()];
+    const manoGiocatore = [mazzo.pop(), mazzo.pop()];
+    setDealerHand(manoTavolo);
+    setPlayerHand(manoGiocatore);
     setDeck(mazzo);
+    const punteggioTavolo = calcolaPunteggio(manoTavolo);
+    const punteggioPlayer = calcolaPunteggio(manoGiocatore);
+    if (punteggioPlayer === 21 && punteggioTavolo === 21) {
+      setStatoGioco(STATO_GIOCO.PAREGGIO);
+    } else if (punteggioPlayer === 21) {
+      setStatoGioco(STATO_GIOCO.BLACKJACK);
+    } else if (punteggioTavolo === 21) {
+      setStatoGioco(STATO_GIOCO.SCONFITTA);
+    } else {
+      setStatoGioco(STATO_GIOCO.IN_CORSO);
+    }
   };
 
   return (
