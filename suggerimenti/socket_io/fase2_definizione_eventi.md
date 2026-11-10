@@ -67,8 +67,8 @@ Il server deve inviare al client un oggetto strutturato così:
 ---
 
 ## 4. Checklist Mentale per la Fase 2
-* [ ] Avere chiaro chi parla (`emit`) e chi ascolta (`on`) per ogni singola azione.
-* [ ] Definire i nomi degli eventi usando una convenzione chiara (es. `soggetto:azione`).
-* [ ] Disegnare sulla carta la struttura del pacchetto dati (`payload`) che il server invierà al client.
-* [ ] Rispettare il principio per cui il client riceve solo ciò che ha il permesso di vedere in quel preciso momento.
+* [x] Avere chiaro chi parla (`emit`) e chi ascolta (`on`) per ogni singola azione.
+* [x] Definire i nomi degli eventi usando una convenzione chiara (es. `soggetto:azione`).
+* [x] Disegnare sulla carta la struttura del pacchetto dati (`payload`) che il server invierà al client.
+* [x] Rispettare il principio per cui il client riceve solo ciò che ha il permesso di vedere in quel preciso momento.
 

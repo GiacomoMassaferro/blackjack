@@ -21,6 +21,19 @@ function App() {
 
   useEffect(() => {
     nuovaPartita();
+
+    // 1. ASCOLTO (Setup): registriamo la funzione che riceve i dati dal server
+    socket.on('tavolo:aggiornato', (dati) => {
+      console.log("Risposta ricevuta dal server:", dati);
+    });
+
+    // 2. TRASMISSIONE (Emit): inviamo la richiesta iniziale appena l'app si monta
+    socket.emit('partita:inizia');
+
+    // 3. PULIZIA (Cleanup): stacchiamo l'ascoltatore quando il componente si smonta per evitare memory leak
+    return () => {
+      socket.off('tavolo:aggiornato');
+    };
   }, []);
 
   function chiamaCarta() {

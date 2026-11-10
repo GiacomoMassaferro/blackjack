@@ -32,6 +32,24 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log("Giocatore disconnesso:", socket.id);
     });
+
+    // ASCOLTATORI DELLE AZIONI DEL GIOCATORE (FASE 2)
+    // 1. Il giocatore avvia o riavvia la partita
+    socket.on('partita:inizia', () => {
+        console.log("Richiesta nuova partita da:", socket.id);
+        // Rispondiamo ESCLUSIVAMENTE al singolo giocatore che ha fatto richiesta
+        socket.emit('tavolo:aggiornato', { messaggio: "Canale test OK! Il server risponde" });
+    });
+
+    // 2. Il giocatore chiede una carta aggiuntiva
+    socket.on('giocatore:chiama', () => {
+        console.log("Giocatore", socket.id, "chiama carta");
+    });
+
+    // 3. Il giocatore si ferma e passa il turno al banco
+    socket.on('giocatore:sta', () => {
+        console.log("Giocatore", socket.id, "sta");
+    });
 });
 
 // 4. AVVIO IN ASCOLTO SULLA PORTA
