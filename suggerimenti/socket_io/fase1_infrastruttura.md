@@ -78,10 +78,10 @@ Prima di pensare al mazzo, alle carte o alle regole del Blackjack, l'obiettivo d
 ---
 
 ## 5. Checklist Mentale per la Fase 1
-* [ ] Creare la cartella `server` e inizializzare un `package.json` dedicato (`npm init -y`).
-* [ ] Installare `express`, `socket.io` e `cors` dentro `server`.
-* [ ] Impostare il server per ascoltare su una porta dedicata (es. 3001).
-* [ ] Configurare il CORS per autorizzare la porta del tuo frontend Vite (`5173`).
-* [ ] Installare `socket.io-client` nella cartella di React.
-* [ ] Verificare che nei terminali compaiano i log di avvenuta connessione e disconnessione.
+* [x] Creare la cartella `server` e inizializzare un `package.json` dedicato (`npm init -y`).
+* [x] Installare `express`, `socket.io` e `cors` dentro `server`.
+* [x] Impostare il server per ascoltare su una porta dedicata (es. 3001).
+* [x] Configurare il CORS per autorizzare la porta del tuo frontend Vite (`5173`).
+* [x] Installare `socket.io-client` nella cartella di React.
+* [x] Verificare che nei terminali compaiano i log di avvenuta connessione e disconnessione.
 

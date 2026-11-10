@@ -1,3 +1,4 @@
+import { io } from 'socket.io-client'; // 1. IMPORT DEL CLIENT SOCKET.IO E DELLE DIPENDENZE REACT
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { STATO_GIOCO, messaggiEsito } from './utility/statiGioco';
@@ -5,6 +6,12 @@ import nuovoMazzo from './utility/nuovoMazzo';
 import VisualizzaMano from './components/hand';
 import calcolaPunteggio from './utility/calcolaPunteggio';
 import './App.css';
+
+// 2. INIZIALIZZAZIONE DELLA CONNESSIONE WEBSOCKET
+// IMPORTANTE: Dichiariamo il socket FUORI dal componente App().
+// In questo modo la connessione viene creata una sola volta al caricamento del file,
+// evitando che React apra una nuova connessione a ogni singolo re-render dell'interfaccia.
+const socket = io("http://localhost:3001");
 
 function App() {
   const [deck, setDeck] = useState([]);
@@ -122,17 +129,17 @@ function App() {
 
         {/* Pulsantiera di Gioco */}
         <footer className="table-controls">
-          <button 
-            className="action-btn hit-btn" 
-            onClick={chiamaCarta} 
+          <button
+            className="action-btn hit-btn"
+            onClick={chiamaCarta}
             disabled={statoGioco !== STATO_GIOCO.IN_CORSO}
           >
             Chiama Carta
           </button>
-          
-          <button 
-            className="action-btn stand-btn" 
-            onClick={stay} 
+
+          <button
+            className="action-btn stand-btn"
+            onClick={stay}
             disabled={statoGioco !== STATO_GIOCO.IN_CORSO}
           >
             Stai
