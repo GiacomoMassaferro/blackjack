@@ -1,4 +1,3 @@
-import { useState } from "react";
 
 export default function calcolaPunteggio(mano) {
     let assi = 0;
