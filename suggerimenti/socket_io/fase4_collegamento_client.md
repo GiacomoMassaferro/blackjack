@@ -76,9 +76,9 @@ L'interfaccia non si accorgerà nemmeno che le carte arrivano via rete da un ser
 ---
 
 ## 6. Checklist Mentale per la Fase 4
-* [ ] Inizializzare la connessione `io()` in modo sicuro senza ricrearla a ogni render.
-* [ ] Impostare l'ascoltatore `tavolo:aggiornato` dentro `useEffect`.
-* [ ] Inserire la funzione di pulizia `socket.off` nel ritorno di `useEffect`.
-* [ ] Sostituire la logica locale di `chiamaCarta`, `stay` e `nuovaPartita` con i rispettivi `socket.emit`.
-* [ ] Verificare che la grafica, i pulsanti disabilitati e i messaggi di vincita rispondano istantaneamente ai comandi del server.
+* [x] Inizializzare la connessione `io()` in modo sicuro senza ricrearla a ogni render.
+* [x] Impostare l'ascoltatore `tavolo:aggiornato` dentro `useEffect`.
+* [x] Inserire la funzione di pulizia `socket.off` nel ritorno di `useEffect`.
+* [x] Sostituire la logica locale di `chiamaCarta`, `stay` e `nuovaPartita` con i rispettivi `socket.emit`.
+* [x] Verificare che la grafica, i pulsanti disabilitati e i messaggi di vincita rispondano istantaneamente ai comandi del server.
 
