@@ -14,20 +14,26 @@ import './App.css';
 const socket = io("http://localhost:3001");
 
 function App() {
-  const [deck, setDeck] = useState([]);
-  const [playerHand, setPlayerHand] = useState([]);
-  const [dealerHand, setDealerHand] = useState([]);
-  const [statoGioco, setStatoGioco] = useState(STATO_GIOCO.IN_CORSO);
+  // STATI LOCALI DELL'INTERFACCIA (Ricevuti dal Server)
+  const [playerHand, setPlayerHand] = useState([]);          // Array carte del giocatore
+  const [dealerHand, setDealerHand] = useState([]);          // Array carte del banco (con eventuale carta coperta '🂠')
+  const [punteggioPlayer, setPunteggioPlayer] = useState(0); // Punteggio calcolato dal server per il giocatore
+  const [punteggioDealer, setPunteggioDealer] = useState("?"); // Punteggio del banco ("?" se coperto, numero se finita)
+  const [deckcount, setDeckCount] = useState(0);             // Numero di carte rimanenti nel mazzo del server
+  const [statoGioco, setStatoGioco] = useState(STATO_GIOCO.IN_CORSO); // Stato della partita gestito dal server
 
   useEffect(() => {
-    nuovaPartita();
-
-    // 1. ASCOLTO (Setup): registriamo la funzione che riceve i dati dal server
+    // 1. ASCOLTO (Setup): riceve il pacchetto dati inviato dal server
     socket.on('tavolo:aggiornato', (dati) => {
-      console.log("Risposta ricevuta dal server:", dati);
+      setPlayerHand(dati.carteGiocatore);
+      setPunteggioPlayer(dati.punteggioGiocatore);
+      setDealerHand(dati.carteBanco);
+      setPunteggioDealer(dati.punteggioBanco);
+      setDeckCount(dati.numeroCarteMazzo);
+      setStatoGioco(dati.statoGioco);
     });
 
-    // 2. TRASMISSIONE (Emit): inviamo la richiesta iniziale appena l'app si monta
+    // 2. TRASMISSIONE (Emit): chiediamo al server di avviare la prima mano all'avvio
     socket.emit('partita:inizia');
 
     // 3. PULIZIA (Cleanup): stacchiamo l'ascoltatore quando il componente si smonta per evitare memory leak
@@ -36,65 +42,17 @@ function App() {
     };
   }, []);
 
+  // AZIONI DEL GIOCATORE (Ora inviano solo segnali al server, zero logica pesante nel browser!)
   function chiamaCarta() {
-    const mazzo = [...deck];
-    if (mazzo.length > 0) {
-      const punteggioAttuale = calcolaPunteggio(playerHand);
-      if (punteggioAttuale < 21) {
-        const cartaPescata = mazzo.pop();
-        setDeck(mazzo);
-
-        const nuovaMano = [...playerHand, cartaPescata];
-        setPlayerHand(nuovaMano);
-
-        if (calcolaPunteggio(nuovaMano) > 21) {
-          setStatoGioco(STATO_GIOCO.PLAYER_SBALLATO);
-        }
-      }
-    }
+    socket.emit('giocatore:chiama');
   }
 
   function stay() {
-    let mazzo = [...deck];
-    let manoDealer = [...dealerHand];
-    let punteggioAttuale = calcolaPunteggio(dealerHand);
-    while (punteggioAttuale < 17 && mazzo.length > 0) {
-      const cartaPescata = mazzo.pop();
-      manoDealer = [...manoDealer, cartaPescata];
-      punteggioAttuale = calcolaPunteggio(manoDealer);
-    }
-    setDealerHand(manoDealer);
-    setDeck(mazzo);
-    const punteggioGiocatore = calcolaPunteggio(playerHand);
-    if (punteggioAttuale > 21) {
-      setStatoGioco(STATO_GIOCO.DEALER_SBALLATO);
-    } else if (punteggioAttuale > punteggioGiocatore) {
-      setStatoGioco(STATO_GIOCO.SCONFITTA);
-    } else if (punteggioAttuale < punteggioGiocatore) {
-      setStatoGioco(STATO_GIOCO.VITTORIA);
-    } else if (punteggioAttuale === punteggioGiocatore) {
-      setStatoGioco(STATO_GIOCO.PAREGGIO);
-    }
+    socket.emit('giocatore:sta');
   }
 
   function nuovaPartita() {
-    const mazzo = nuovoMazzo();
-    const manoTavolo = [mazzo.pop(), mazzo.pop()];
-    const manoGiocatore = [mazzo.pop(), mazzo.pop()];
-    setDealerHand(manoTavolo);
-    setPlayerHand(manoGiocatore);
-    setDeck(mazzo);
-    const punteggioTavolo = calcolaPunteggio(manoTavolo);
-    const punteggioPlayer = calcolaPunteggio(manoGiocatore);
-    if (punteggioPlayer === 21 && punteggioTavolo === 21) {
-      setStatoGioco(STATO_GIOCO.PAREGGIO);
-    } else if (punteggioPlayer === 21) {
-      setStatoGioco(STATO_GIOCO.BLACKJACK);
-    } else if (punteggioTavolo === 21) {
-      setStatoGioco(STATO_GIOCO.SCONFITTA);
-    } else {
-      setStatoGioco(STATO_GIOCO.IN_CORSO);
-    }
+    socket.emit('partita:inizia');
   }
 
   return (
@@ -102,7 +60,7 @@ function App() {
       <header className="casino-header">
         <h1>♠ Blackjack Royale ♥</h1>
         <div className="deck-counter">
-          Carte nel mazzo: <span>{deck.length}</span>
+          Carte nel mazzo: <span>{deckcount}</span>
         </div>
       </header>
 
@@ -112,7 +70,7 @@ function App() {
           <div className="area-info">
             <h2>BANCO</h2>
             <div className="score-pill">
-              Punteggio: <strong>{statoGioco === STATO_GIOCO.IN_CORSO ? "?" : calcolaPunteggio(dealerHand)}</strong>
+              Punteggio: <strong>{punteggioDealer}</strong>
             </div>
           </div>
           <div className="cards-row">
@@ -132,7 +90,7 @@ function App() {
           <div className="area-info">
             <h2>GIOCATORE</h2>
             <div className="score-pill">
-              Punteggio: <strong>{calcolaPunteggio(playerHand)}</strong>
+              Punteggio: <strong>{punteggioPlayer}</strong>
             </div>
           </div>
           <div className="cards-row">

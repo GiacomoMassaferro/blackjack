@@ -72,11 +72,11 @@ Quando il giocatore chiude la scheda, il server riceve `disconnect`:
 ---
 
 ## 4. Checklist Mentale per la Fase 3
-* [ ] Copiare o condividere le utility (`nuovoMazzo`, `calcolaPunteggio`, `statiGioco`) nella cartella `server`.
-* [ ] Creare una mappa in memoria per associare le partite ai `socket.id`.
-* [ ] Implementare l'ascoltatore per `partita:inizia` e il calcolo del Blackjack iniziale.
-* [ ] Implementare l'ascoltatore per `giocatore:chiama` con controllo dello sballo.
-* [ ] Implementare l'ascoltatore per `giocatore:sta` con il ciclo del banco a 17.
-* [ ] Implementare la funzione che "filtra" il tavolo prima di inviarlo al client (nascondendo la carta coperta).
-* [ ] Rimuovere la partita dalla memoria quando l'utente si disconnette.
+* [x] Copiare o condividere le utility (`nuovoMazzo`, `calcolaPunteggio`, `statiGioco`) nella cartella `server`.
+* [x] Creare una mappa in memoria per associare le partite ai `socket.id`.
+* [x] Implementare l'ascoltatore per `partita:inizia` e il calcolo del Blackjack iniziale.
+* [x] Implementare l'ascoltatore per `giocatore:chiama` con controllo dello sballo.
+* [x] Implementare l'ascoltatore per `giocatore:sta` con il ciclo del banco a 17.
+* [x] Implementare la funzione che "filtra" il tavolo prima di inviarlo al client (nascondendo la carta coperta).
+* [x] Rimuovere la partita dalla memoria quando l'utente si disconnette.
 
